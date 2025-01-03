@@ -1,6 +1,5 @@
 'use client';
 
-import Image from "next/image";
 import AuthButton from './components/AuthButton';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';

@@ -1,11 +1,9 @@
 'use client';
 
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 
 export default function AuthButton() {
   const { data: session, status } = useSession();
-  const router = useRouter();
 
   const handleSignIn = async () => {
     await signIn('google', { callbackUrl: '/dashboard' });
