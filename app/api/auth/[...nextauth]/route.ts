@@ -1,6 +1,7 @@
-import NextAuth, { type DefaultSession, type Session } from 'next-auth';
+import NextAuth, { type DefaultSession, type Session, User } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-import { JWT } from 'next-auth/jwt';
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import { prisma } from '@/lib/prisma';
 
 declare module 'next-auth' {
   interface Session {
@@ -10,27 +11,21 @@ declare module 'next-auth' {
   }
 }
 
-if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-  throw new Error('Missing Google OAuth credentials');
-}
-
 export const authOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
   callbacks: {
-    async session({ session, token }: { session: Session; token: JWT }) {
-      if (session?.user && token.sub) {
-        session.user.id = token.sub;
+    async session({ session, user }: { session: Session; user: User }) {
+      if (session?.user) {
+        session.user.id = user.id;
       }
       return session;
     },
-  },
-  pages: {
-    signIn: '/auth/signin',
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
