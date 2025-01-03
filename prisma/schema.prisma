@@ -42,6 +42,12 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  
+  // Friend relationships
+  sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
+  receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
+  friends               User[]    @relation("UserFriends")
+  friendsOf            User[]    @relation("UserFriends")
 }
 
 model VerificationToken {
@@ -50,4 +56,16 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model FriendRequest {
+  id        String   @id @default(cuid())
+  senderId  String
+  sender    User     @relation("SentFriendRequests", fields: [senderId], references: [id])
+  receiverId String
+  receiver  User     @relation("ReceivedFriendRequests", fields: [receiverId], references: [id])
+  status    String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  createdAt DateTime @default(now())
+
+  @@unique([senderId, receiverId])
 }

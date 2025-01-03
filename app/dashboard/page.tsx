@@ -33,33 +33,43 @@ export default function Dashboard() {
           <h1 className="text-2xl font-bold">Dashboard</h1>
           <div className="flex items-center gap-4">
             <div className="absolute top-4 right-4">
-            <AuthButton />
+              <AuthButton />
             </div>
           </div>
         </div>
         
-        {/* Add your dashboard content here */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="p-6 rounded-lg border border-solid border-black/[.08] dark:border-white/[.145] text-white">
+          <button 
+            onClick={() => router.push('/trips/past')}
+            className="p-6 rounded-lg border border-solid border-white/20 text-white hover:bg-white/10 transition-colors text-left"
+          >
             <h2 className="text-xl font-semibold mb-4">Past Trips</h2>
-            <p>Your dashboard content goes here</p>
-          </div>
+            <p>View your travel history</p>
+          </button>
           
-          <div className="p-6 rounded-lg border border-solid border-black/[.08] dark:border-white/[.145] text-white">
+          <button 
+            onClick={() => router.push('/friends')}
+            className="p-6 rounded-lg border border-solid border-white/20 text-white hover:bg-white/10 transition-colors text-left"
+          >
             <h2 className="text-xl font-semibold mb-4">Friends</h2>
-            <p>Your activity content goes here</p>
-          </div>
+            <p>Connect with travel buddies</p>
+          </button>
           
-          <div className="p-6 rounded-lg border border-solid border-black/[.08] dark:border-white/[.145] text-white">
+          <button 
+            onClick={() => router.push('/trips/upcoming')}
+            className="p-6 rounded-lg border border-solid border-white/20 text-white hover:bg-white/10 transition-colors text-left"
+          >
             <h2 className="text-xl font-semibold mb-4">Upcoming Trips</h2>
-            <p>Your events content goes here</p>
-          </div>
+            <p>See your planned adventures</p>
+          </button>
 
-          
-          <div className="p-6 rounded-lg border border-solid border-black/[.08] dark:border-white/[.145] text-white">
+          <button 
+            onClick={() => router.push('/trips/plan')}
+            className="p-6 rounded-lg border border-solid border-white/20 text-white hover:bg-white/10 transition-colors text-left"
+          >
             <h2 className="text-xl font-semibold mb-4">Plan a Trip</h2>
-            <p>Your events content goes here</p>
-          </div>
+            <p>Start planning your next journey</p>
+          </button>
         </div>
       </div>
     </div>
