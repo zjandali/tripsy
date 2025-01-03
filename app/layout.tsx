@@ -6,7 +6,6 @@ import AuthProvider from './providers/AuthProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
-
 export default function RootLayout({
   children,
 }: {
@@ -16,7 +15,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-          <main className="min-h-screen bg-background">
+          <main className="min-h-screen bg-gradient-to-br from-sky-600 to-red-600">
             {children}
           </main>
         </AuthProvider>
