@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image'
 
 interface User {
   id: string;
@@ -99,10 +100,12 @@ export default function FriendsPage() {
             <div key={friend.id} className="p-6 rounded-lg border border-white/20 text-white">
               <div className="flex items-center gap-4">
                 {friend.image && (
-                  <img
+                  <Image
                     src={friend.image}
                     alt={friend.name || ''}
                     className="w-12 h-12 rounded-full"
+                    width={48}
+                    height={48}
                   />
                 )}
                 <div>
