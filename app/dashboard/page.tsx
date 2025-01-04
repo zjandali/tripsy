@@ -3,6 +3,7 @@ import AuthButton from '../components/AuthButton';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react';
+import Link from 'next/link';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -69,6 +70,14 @@ export default function Dashboard() {
           >
             <h2 className="text-xl font-semibold mb-4">Plan a Trip</h2>
             <p>Start planning your next journey</p>
+          </button>
+
+          <button 
+            onClick={() => router.push('/messages')}
+            className="p-6 rounded-lg border border-solid border-white/20 text-white hover:bg-white/10 transition-colors text-left"
+          >
+            <h2 className="text-xl font-semibold mb-4">Messages</h2>
+            <p>Message your friends</p>
           </button>
         </div>
       </div>

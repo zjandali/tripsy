@@ -48,6 +48,8 @@ model User {
   receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
   friends               User[]    @relation("UserFriends")
   friendsOf            User[]    @relation("UserFriends")
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
 }
 
 model VerificationToken {
@@ -68,4 +70,15 @@ model FriendRequest {
   createdAt DateTime @default(now())
 
   @@unique([senderId, receiverId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  content   String
+  senderId  String
+  sender    User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId String
+  receiver  User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  createdAt DateTime @default(now())
+  read      Boolean  @default(false)
 }
