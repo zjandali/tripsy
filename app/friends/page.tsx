@@ -75,9 +75,17 @@ export default function FriendsPage() {
         throw new Error(error);
       }
 
-      // Remove the user from search results after sending request
-      setSearchResults(prevResults => 
-        prevResults.filter(user => user.id !== friendId)
+      // Update the user's status in search results instead of removing them
+      setSearchResults(prevResults =>
+        prevResults.map(user => {
+          if (user.id === friendId) {
+            return {
+              ...user,
+              receivedFriendRequests: [{ id: 'temp', status: 'PENDING' }]
+            };
+          }
+          return user;
+        })
       );
 
       // Show success message (you can implement a toast notification here)
@@ -115,6 +123,58 @@ export default function FriendsPage() {
     }
   };
 
+  const cancelFriendRequest = async (requestId: string) => {
+    try {
+      const response = await fetch('/api/friends/cancel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to cancel friend request');
+      }
+
+      // Update the search results to show "Add Friend" again
+      setSearchResults(prevResults =>
+        prevResults.map(user => {
+          if (user.receivedFriendRequests.some(req => req.id === requestId)) {
+            return {
+              ...user,
+              receivedFriendRequests: []
+            };
+          }
+          return user;
+        })
+      );
+    } catch (error) {
+      console.error('Error canceling friend request:', error);
+      alert('Failed to cancel friend request');
+    }
+  };
+
+  const removeFriend = async (friendId: string) => {
+    try {
+      const response = await fetch('/api/friends/remove', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ friendId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to remove friend');
+      }
+
+      // Update the friends list
+      setFriends(prevFriends => 
+        prevFriends.filter(friend => friend.id !== friendId)
+      );
+    } catch (error) {
+      console.error('Error removing friend:', error);
+      alert('Failed to remove friend');
+    }
+  };
+
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-7xl mx-auto">
@@ -147,10 +207,10 @@ export default function FriendsPage() {
                       </button>
                     ) : user.receivedFriendRequests.length > 0 ? (
                       <button
-                        disabled
-                        className="px-3 py-1 rounded-full border border-white/20 bg-white/10 cursor-not-allowed"
+                        onClick={() => cancelFriendRequest(user.receivedFriendRequests[0].id)}
+                        className="px-3 py-1 rounded-full border border-white/20 hover:bg-red-500 hover:border-red-500 hover:text-white transition-colors"
                       >
-                        Request Sent
+                        Cancel Request
                       </button>
                     ) : (
                       <button
@@ -193,21 +253,18 @@ export default function FriendsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {friends.map((friend) => (
-            <div key={friend.id} className="p-6 rounded-lg border border-white/20 text-white">
-              <div className="flex items-center gap-4">
-                {friend.image && (
-                  <Image
-                    src={friend.image}
-                    alt={friend.name || ''}
-                    className="w-12 h-12 rounded-full"
-                    width={48}
-                    height={48}
-                  />
-                )}
+            <div key={friend.id} className="p-4 rounded-lg border border-white/20 text-white">
+              <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-semibold">{friend.name}</h3>
+                  <p className="font-semibold">{friend.name}</p>
                   <p className="text-sm text-white/70">{friend.email}</p>
                 </div>
+                <button
+                  onClick={() => removeFriend(friend.id)}
+                  className="px-3 py-1 rounded-full border border-white/20 hover:bg-red-500 hover:border-red-500 hover:text-white transition-colors"
+                >
+                  Remove Friend
+                </button>
               </div>
             </div>
           ))}
