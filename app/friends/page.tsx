@@ -177,57 +177,8 @@ export default function FriendsPage() {
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl font-bold mb-8 text-white">Friends</h1>
-        
-        <div className="mb-8">
-          <input
-            type="text"
-            placeholder="Search users..."
-            value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
-            className="w-full p-2 rounded-lg border border-white/20 bg-transparent text-white"
-          />
-          
-          {searchResults.length > 0 && (
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {searchResults.map((user) => (
-                <div key={user.id} className="p-4 rounded-lg border border-white/20 text-white">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold">{user.name}</p>
-                      <p className="text-sm text-white/70">{user.email}</p>
-                    </div>
-                    {user.sentFriendRequests.length > 0 ? (
-                      <button
-                        onClick={() => acceptFriendRequest(user.sentFriendRequests[0].id)}
-                        className="px-3 py-1 rounded-full border border-white/20 hover:bg-white hover:text-black transition-colors"
-                      >
-                        Accept Request
-                      </button>
-                    ) : user.receivedFriendRequests.length > 0 ? (
-                      <button
-                        onClick={() => cancelFriendRequest(user.receivedFriendRequests[0].id)}
-                        className="px-3 py-1 rounded-full border border-white/20 hover:bg-red-500 hover:border-red-500 hover:text-white transition-colors"
-                      >
-                        Cancel Request
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => sendFriendRequest(user.id)}
-                        className="px-3 py-1 rounded-full border border-white/20 hover:bg-white hover:text-black transition-colors"
-                      >
-                        Add Friend
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
         {pendingRequests.length > 0 && (
-          <div className="mb-8">
+          <div className="mb-12">
             <h2 className="text-xl font-semibold mb-4 text-white">Pending Friend Requests</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {pendingRequests.map((user) => (
@@ -250,23 +201,81 @@ export default function FriendsPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {friends.map((friend) => (
-            <div key={friend.id} className="p-4 rounded-lg border border-white/20 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold">{friend.name}</p>
-                  <p className="text-sm text-white/70">{friend.email}</p>
-                </div>
-                <button
-                  onClick={() => removeFriend(friend.id)}
-                  className="px-3 py-1 rounded-full border border-white/20 hover:bg-red-500 hover:border-red-500 hover:text-white transition-colors"
-                >
-                  Remove Friend
-                </button>
+        <div>
+          <h2 className="text-2xl font-bold mb-6 text-white">Find New Friends</h2>
+          <div className="mb-8">
+            <input
+              type="text"
+              placeholder="Search users by name or email..."
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              className="w-full p-2 rounded-lg border border-white/20 bg-transparent text-white"
+            />
+            
+            {searchResults.length > 0 && (
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {searchResults.map((user) => {
+                  const isAlreadyFriend = friends.some(friend => friend.id === user.id);
+                  
+                  return (
+                    <div key={user.id} className="p-4 rounded-lg border border-white/20 text-white">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-semibold">{user.name}</p>
+                          <p className="text-sm text-white/70">{user.email}</p>
+                        </div>
+                        {isAlreadyFriend ? (
+                          <span className="text-sm text-white/50">Already Friends</span>
+                        ) : user.sentFriendRequests.length > 0 ? (
+                          <button
+                            onClick={() => acceptFriendRequest(user.sentFriendRequests[0].id)}
+                            className="px-3 py-1 rounded-full border border-white/20 hover:bg-white hover:text-black transition-colors"
+                          >
+                            Accept Request
+                          </button>
+                        ) : user.receivedFriendRequests.length > 0 ? (
+                          <button
+                            onClick={() => cancelFriendRequest(user.receivedFriendRequests[0].id)}
+                            className="px-3 py-1 rounded-full border border-white/20 hover:bg-red-500 hover:border-red-500 hover:text-white transition-colors"
+                          >
+                            Cancel Request
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => sendFriendRequest(user.id)}
+                            className="px-3 py-1 rounded-full border border-white/20 hover:bg-white hover:text-black transition-colors"
+                          >
+                            Add Friend
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            </div>
-          ))}
+            )}
+          </div>
+        </div>
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 text-white">My Friends</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {friends.map((friend) => (
+              <div key={friend.id} className="p-4 rounded-lg border border-white/20 text-white bg-white/5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold">{friend.name}</p>
+                    <p className="text-sm text-white/70">{friend.email}</p>
+                  </div>
+                  <button
+                    onClick={() => removeFriend(friend.id)}
+                    className="px-3 py-1 rounded-full border border-white/20 hover:bg-red-500 hover:border-red-500 hover:text-white transition-colors"
+                  >
+                    Remove Friend
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

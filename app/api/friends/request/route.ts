@@ -30,11 +30,22 @@ export async function POST(request: Request) {
   const existingFriendship = await prisma.user.findFirst({
     where: {
       id: session.user.id,
-      friends: {
-        some: {
-          id: friendId
+      OR: [
+        {
+          friends: {
+            some: {
+              id: friendId
+            }
+          }
+        },
+        {
+          friendsOf: {
+            some: {
+              id: friendId
+            }
+          }
         }
-      }
+      ]
     }
   });
 

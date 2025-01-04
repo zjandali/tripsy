@@ -18,9 +18,15 @@ export async function GET() {
     },
   });
 
-  const allFriends = [...(friends?.friends || []), ...(friends?.friendsOf || [])];
+  // Remove duplicates by creating a Map with user IDs as keys
+  const uniqueFriends = new Map();
+  [...(friends?.friends || []), ...(friends?.friendsOf || [])].forEach(friend => {
+    if (!uniqueFriends.has(friend.id)) {
+      uniqueFriends.set(friend.id, friend);
+    }
+  });
   
-  return NextResponse.json(allFriends);
+  return NextResponse.json(Array.from(uniqueFriends.values()));
 }
 
 export async function POST(request: Request) {
