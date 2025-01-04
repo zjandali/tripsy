@@ -34,6 +34,11 @@ export async function GET(request: Request) {
           senderId: session.user.id,
         },
       },
+      sentFriendRequests: {
+        where: {
+          receiverId: session.user.id,
+        },
+      },
     },
     take: 10,
   });

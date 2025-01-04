@@ -11,6 +11,7 @@ interface User {
   email: string;
   image: string;
   receivedFriendRequests: Array<{ id: string; status: string }>;
+  sentFriendRequests: Array<{ id: string; status: string }>;
 }
 
 export default function FriendsPage() {
@@ -19,6 +20,7 @@ export default function FriendsPage() {
   const [friends, setFriends] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<User[]>([]);
+  const [pendingRequests, setPendingRequests] = useState<User[]>([]);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -29,6 +31,7 @@ export default function FriendsPage() {
   useEffect(() => {
     if (session?.user?.id) {
       fetchFriends();
+      fetchPendingRequests();
     }
   }, [session]);
 
@@ -85,6 +88,33 @@ export default function FriendsPage() {
     }
   };
 
+  const fetchPendingRequests = async () => {
+    const response = await fetch('/api/friends/pending');
+    const data = await response.json();
+    setPendingRequests(data);
+  };
+
+  const acceptFriendRequest = async (requestId: string) => {
+    try {
+      const response = await fetch('/api/friends/accept', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to accept friend request');
+      }
+
+      // Refresh the friends and pending requests lists
+      fetchFriends();
+      fetchPendingRequests();
+    } catch (error) {
+      console.error('Error accepting friend request:', error);
+      alert('Failed to accept friend request');
+    }
+  };
+
   return (
     <div className="min-h-screen p-8">
       <div className="max-w-7xl mx-auto">
@@ -108,23 +138,58 @@ export default function FriendsPage() {
                       <p className="font-semibold">{user.name}</p>
                       <p className="text-sm text-white/70">{user.email}</p>
                     </div>
-                    <button
-                      onClick={() => sendFriendRequest(user.id)}
-                      disabled={user.receivedFriendRequests.length > 0}
-                      className={`px-3 py-1 rounded-full border border-white/20 transition-colors ${
-                        user.receivedFriendRequests.length > 0
-                          ? 'bg-white/10 cursor-not-allowed'
-                          : 'hover:bg-white hover:text-black'
-                      }`}
-                    >
-                      {user.receivedFriendRequests.length > 0 ? 'Request Sent' : 'Add Friend'}
-                    </button>
+                    {user.sentFriendRequests.length > 0 ? (
+                      <button
+                        onClick={() => acceptFriendRequest(user.sentFriendRequests[0].id)}
+                        className="px-3 py-1 rounded-full border border-white/20 hover:bg-white hover:text-black transition-colors"
+                      >
+                        Accept Request
+                      </button>
+                    ) : user.receivedFriendRequests.length > 0 ? (
+                      <button
+                        disabled
+                        className="px-3 py-1 rounded-full border border-white/20 bg-white/10 cursor-not-allowed"
+                      >
+                        Request Sent
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => sendFriendRequest(user.id)}
+                        className="px-3 py-1 rounded-full border border-white/20 hover:bg-white hover:text-black transition-colors"
+                      >
+                        Add Friend
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
             </div>
           )}
         </div>
+
+        {pendingRequests.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4 text-white">Pending Friend Requests</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {pendingRequests.map((user) => (
+                <div key={user.id} className="p-4 rounded-lg border border-white/20 text-white">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold">{user.name}</p>
+                      <p className="text-sm text-white/70">{user.email}</p>
+                    </div>
+                    <button
+                      onClick={() => acceptFriendRequest(user.sentFriendRequests[0].id)}
+                      className="px-3 py-1 rounded-full border border-white/20 hover:bg-white hover:text-black transition-colors"
+                    >
+                      Accept Request
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {friends.map((friend) => (
