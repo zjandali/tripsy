@@ -73,12 +73,13 @@ model FriendRequest {
 }
 
 model Message {
-  id        String   @id @default(cuid())
-  content   String
-  senderId  String
-  sender    User     @relation("SentMessages", fields: [senderId], references: [id])
+  id         String   @id @default(cuid())
+  content    String
+  senderId   String
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
   receiverId String
-  receiver  User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
-  createdAt DateTime @default(now())
-  read      Boolean  @default(false)
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@index([senderId, receiverId])
 }
