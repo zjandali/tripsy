@@ -28,6 +28,13 @@ export async function GET(request: Request) {
         id: session.user.id,
       },
     },
+    include: {
+      receivedFriendRequests: {
+        where: {
+          senderId: session.user.id,
+        },
+      },
+    },
     take: 10,
   });
 

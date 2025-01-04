@@ -10,6 +10,7 @@ interface User {
   name: string;
   email: string;
   image: string;
+  receivedFriendRequests: Array<{ id: string; status: string }>;
 }
 
 export default function FriendsPage() {
@@ -39,7 +40,19 @@ export default function FriendsPage() {
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
-    if (query.length < 3) return;
+    
+    // Clear results if query doesn't match current results
+    if (searchResults.length > 0 && !searchResults.some(user => 
+      user.name?.toLowerCase().includes(query.toLowerCase()) || 
+      user.email?.toLowerCase().includes(query.toLowerCase())
+    )) {
+      setSearchResults([]);
+    }
+    
+    if (query.length < 3) {
+      setSearchResults([]);
+      return;
+    }
 
     const response = await fetch(`/api/users/search?q=${query}`);
     const data = await response.json();
@@ -48,14 +61,27 @@ export default function FriendsPage() {
 
   const sendFriendRequest = async (friendId: string) => {
     try {
-      await fetch('/api/friends', {
+      const response = await fetch('/api/friends/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ friendId }),
       });
-      // Show success message
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error);
+      }
+
+      // Remove the user from search results after sending request
+      setSearchResults(prevResults => 
+        prevResults.filter(user => user.id !== friendId)
+      );
+
+      // Show success message (you can implement a toast notification here)
+      alert('Friend request sent successfully!');
     } catch (error) {
       console.error('Error sending friend request:', error);
+      alert(error instanceof Error ? error.message : 'Failed to send friend request');
     }
   };
 
@@ -84,9 +110,14 @@ export default function FriendsPage() {
                     </div>
                     <button
                       onClick={() => sendFriendRequest(user.id)}
-                      className="px-3 py-1 rounded-full border border-white/20 hover:bg-white hover:text-black transition-colors"
+                      disabled={user.receivedFriendRequests.length > 0}
+                      className={`px-3 py-1 rounded-full border border-white/20 transition-colors ${
+                        user.receivedFriendRequests.length > 0
+                          ? 'bg-white/10 cursor-not-allowed'
+                          : 'hover:bg-white hover:text-black'
+                      }`}
                     >
-                      Add Friend
+                      {user.receivedFriendRequests.length > 0 ? 'Request Sent' : 'Add Friend'}
                     </button>
                   </div>
                 </div>
