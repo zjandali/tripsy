@@ -2,7 +2,7 @@
 
 import '@/app/globals.css'
 import { Inter } from 'next/font/google'
-import AuthProvider from './providers/AuthProvider'
+import AuthProvider from '@/app/providers/AuthProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,7 +15,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-          <main className="min-h-screen bg-gradient-to-br from-sky-600 to-red-600">
+          <main className="min-h-screen bg-gradient-to-br from-teal-600 to-light-blue-600">
             {children}
           </main>
         </AuthProvider>
