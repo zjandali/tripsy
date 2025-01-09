@@ -15,7 +15,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-          <main className="min-h-screen bg-gradient-to-br from-teal-600 to-light-blue-600">
+          <main className="min-h-screen bg-gradient-to-br from-teal-600 to-blue-600">
             {children}
           </main>
         </AuthProvider>
