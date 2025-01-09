@@ -4,6 +4,7 @@ import AuthButton from '@/app/components/AuthButton';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Plane, Users, Calendar, MapPin, ArrowRight, Globe2 } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Home() {
   const { data: session } = useSession();
@@ -98,12 +99,14 @@ export default function Home() {
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-gray-50 p-6 rounded-lg">
-              <img
+              <Image
                 src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=800&q=80"
                 alt="Happy traveler"
-                className="w-20 h-20 rounded-full mx-auto mb-4 object-cover"
+                width={80}
+                height={80}
+                className="rounded-full mx-auto mb-4 object-cover"
               />
-              <p className="text-gray-600 italic mb-4">"Tripsy made planning our group vacation to Greece so much easier!"</p>
+              <p className="text-gray-600 italic mb-4">&ldquo;Tripsy made planning our group vacation to Greece so much easier!&rdquo;</p>
               <p className="font-semibold">Sarah M.</p>
             </div>
             <div className="bg-gray-50 p-6 rounded-lg">
@@ -112,7 +115,7 @@ export default function Home() {
                 alt="Happy traveler"
                 className="w-20 h-20 rounded-full mx-auto mb-4 object-cover"
               />
-              <p className="text-gray-600 italic mb-4">"The best tool for organizing group trips. Saved us so much time!"</p>
+              <p className="text-gray-600 italic mb-4">&ldquo;The best tool for organizing group trips. Saved us so much time!&rdquo;</p>
               <p className="font-semibold">Michael R.</p>
             </div>
             <div className="bg-gray-50 p-6 rounded-lg">
@@ -121,7 +124,7 @@ export default function Home() {
                 alt="Happy traveler"
                 className="w-20 h-20 rounded-full mx-auto mb-4 object-cover"
               />
-              <p className="text-gray-600 italic mb-4">"Finally, no more endless group chats about travel planning!"</p>
+              <p className="text-gray-600 italic mb-4">&ldquo;Finally, no more endless group chats about travel planning!&rdquo;</p>
               <p className="font-semibold">Emily K.</p>
             </div>
           </div>

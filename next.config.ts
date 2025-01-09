@@ -7,10 +7,15 @@ const nextConfig = {
         hostname: 'lh3.googleusercontent.com',
         pathname: '/a/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      }
     ],
   },
 }
 
-module.exports = nextConfig
+module.exports = nextConfig;
 
 export default nextConfig;

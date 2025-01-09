@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react';
 import { Plane, Users, Calendar, MessageSquare, History, Plus } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
@@ -37,10 +38,12 @@ export default function Dashboard() {
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center">
-              <img
-                src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=800&q=80"
+              <Image
+                src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6"
                 alt="Profile"
-                className="w-10 h-10 rounded-full border-2 border-white"
+                width={40}
+                height={40}
+                className="rounded-full border-2 border-white"
               />
               <AuthButton />
             </div>
