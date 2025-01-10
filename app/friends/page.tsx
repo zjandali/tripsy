@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Users, Search, UserMinus, MessageSquare, MapPin } from 'lucide-react';
+import { Users, Search, UserMinus, MessageSquare, MapPin, ArrowLeft } from 'lucide-react';
 
 interface User {
   id: string;
@@ -182,9 +182,17 @@ export default function FriendsPage() {
     <div className="min-h-screen bg-gradient-to-b from-blue-600 to-blue-800 p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center">
-            <Users className="h-8 w-8 text-white" />
-            <h1 className="text-3xl font-bold text-white ml-2">Friends</h1>
+          <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => router.push('/dashboard')} 
+              className="p-2 hover:bg-white/10 rounded-full transition-colors"
+            >
+              <ArrowLeft className="h-6 w-6 text-white" />
+            </button>
+            <div className="flex items-center">
+              <Users className="h-8 w-8 text-white" />
+              <h1 className="text-3xl font-bold text-white ml-2">Friends</h1>
+            </div>
           </div>
           <div className="relative">
             <input
