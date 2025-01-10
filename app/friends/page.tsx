@@ -3,12 +3,16 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { Users, Search, UserPlus, UserMinus, MessageSquare, MapPin } from 'lucide-react';
 
 interface User {
   id: string;
   name: string;
   email: string;
   image: string;
+  location?: string;
+  trips?: number;
+  mutualFriends?: number;
   receivedFriendRequests: Array<{ id: string; status: string }>;
   sentFriendRequests: Array<{ id: string; status: string }>;
 }
@@ -175,24 +179,50 @@ export default function FriendsPage() {
   };
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="min-h-screen bg-gradient-to-b from-blue-600 to-blue-800 p-8">
       <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center">
+            <Users className="h-8 w-8 text-white" />
+            <h1 className="text-3xl font-bold text-white ml-2">Friends</h1>
+          </div>
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search friends..."
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              className="pl-10 pr-4 py-2 rounded-lg bg-white/10 backdrop-blur-lg border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 w-64"
+            />
+            <Search className="absolute left-3 top-2.5 h-5 w-5 text-white/50" />
+          </div>
+        </div>
+
         {pendingRequests.length > 0 && (
-          <div className="mb-12">
-            <h2 className="text-xl font-semibold mb-4 text-white">Pending Friend Requests</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold text-white mb-4">Friend Requests</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {pendingRequests.map((user) => (
-                <div key={user.id} className="p-4 rounded-lg border border-white/20 text-white">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold">{user.name}</p>
-                      <p className="text-sm text-white/70">{user.email}</p>
+                <div key={user.id} className="bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-white/20">
+                  <div className="flex items-center mb-4">
+                    <img src={user.image} alt={user.name} className="w-12 h-12 rounded-full" />
+                    <div className="ml-4">
+                      <h3 className="text-white font-semibold">{user.name}</h3>
+                      <p className="text-white/70 text-sm">{user.email}</p>
                     </div>
+                  </div>
+                  <div className="flex gap-2">
                     <button
                       onClick={() => acceptFriendRequest(user.sentFriendRequests[0].id)}
-                      className="px-3 py-1 rounded-full border border-white/20 hover:bg-white hover:text-black transition-colors"
+                      className="flex-1 bg-white/20 hover:bg-white/30 text-white py-2 rounded-lg transition-colors"
                     >
-                      Accept Request
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => cancelFriendRequest(user.sentFriendRequests[0].id)}
+                      className="flex-1 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg transition-colors"
+                    >
+                      Decline
                     </button>
                   </div>
                 </div>
@@ -202,16 +232,7 @@ export default function FriendsPage() {
         )}
 
         <div>
-          <h2 className="text-2xl font-bold mb-6 text-white">Find New Friends</h2>
           <div className="mb-8">
-            <input
-              type="text"
-              placeholder="Search users by name or email..."
-              value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="w-full p-2 rounded-lg border border-white/20 bg-transparent text-white"
-            />
-            
             {searchResults.length > 0 && (
               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {searchResults.map((user) => {
@@ -256,21 +277,34 @@ export default function FriendsPage() {
             )}
           </div>
         </div>
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 text-white">My Friends</h2>
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-white mb-4">Your Friends</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {friends.map((friend) => (
-              <div key={friend.id} className="p-4 rounded-lg border border-white/20 text-white bg-white/5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold">{friend.name}</p>
-                    <p className="text-sm text-white/70">{friend.email}</p>
+              <div key={friend.id} className="group bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-white/20 hover:bg-white/20 transition-all">
+                <div className="flex items-center mb-4">
+                  <img src={friend.image} alt={friend.name} className="w-12 h-12 rounded-full" />
+                  <div className="ml-4">
+                    <h3 className="text-white font-semibold">{friend.name}</h3>
+                    {friend.location && (
+                      <div className="flex items-center text-white/70 text-sm">
+                        <MapPin className="h-4 w-4 mr-1" />
+                        {friend.location}
+                      </div>
+                    )}
                   </div>
+                </div>
+                <div className="flex gap-2">
+                  <button className="flex-1 bg-white/20 hover:bg-white/30 text-white py-2 rounded-lg transition-colors flex items-center justify-center">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Message
+                  </button>
                   <button
                     onClick={() => removeFriend(friend.id)}
-                    className="px-3 py-1 rounded-full border border-white/20 hover:bg-red-500 hover:border-red-500 hover:text-white transition-colors"
+                    className="flex-1 bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg transition-colors flex items-center justify-center"
                   >
-                    Remove Friend
+                    <UserMinus className="h-4 w-4 mr-2" />
+                    Unfriend
                   </button>
                 </div>
               </div>
