@@ -3,8 +3,7 @@
 import AuthButton from '@/app/components/AuthButton';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Plane, Users, Calendar, MapPin, ArrowRight, Globe2 } from 'lucide-react';
-import Image from 'next/image';
+import { Plane, Users, Calendar, MapPin, ArrowRight } from 'lucide-react';
 
 export default function Home() {
   const { data: session } = useSession();
@@ -49,7 +48,7 @@ export default function Home() {
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Make group travel planning easy and fun. Collaborate on itineraries, split costs,
-            and create unforgettable memories with Tripsy.
+            and create unforgettable memories with Tripsy, Powered by AI.
           </p>
           <button className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors flex items-center mx-auto">
             Start Planning Your Trip
@@ -81,52 +80,6 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-semibold mb-2">Itinerary Builder</h3>
             <p className="text-gray-600">Create and share detailed travel plans with your group.</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Social Proof Section */}
-      <div className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Trusted by Travelers Worldwide</h2>
-            <div className="flex justify-center items-center space-x-12 mt-8">
-              <Globe2 className="h-12 w-12 text-gray-400" />
-              <span className="text-2xl font-bold text-gray-400">50K+</span>
-              <span className="text-2xl font-bold text-gray-400">Trips Planned</span>
-            </div>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-gray-50 p-6 rounded-lg">
-              <Image
-                src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=800&q=80"
-                alt="Happy traveler"
-                width={80}
-                height={80}
-                className="rounded-full mx-auto mb-4 object-cover"
-              />
-              <p className="text-gray-600 italic mb-4">&ldquo;Tripsy made planning our group vacation to Greece so much easier!&rdquo;</p>
-              <p className="font-semibold">Sarah M.</p>
-            </div>
-            <div className="bg-gray-50 p-6 rounded-lg">
-              <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80"
-                alt="Happy traveler"
-                className="w-20 h-20 rounded-full mx-auto mb-4 object-cover"
-              />
-              <p className="text-gray-600 italic mb-4">&ldquo;The best tool for organizing group trips. Saved us so much time!&rdquo;</p>
-              <p className="font-semibold">Michael R.</p>
-            </div>
-            <div className="bg-gray-50 p-6 rounded-lg">
-              <img
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80"
-                alt="Happy traveler"
-                className="w-20 h-20 rounded-full mx-auto mb-4 object-cover"
-              />
-              <p className="text-gray-600 italic mb-4">&ldquo;Finally, no more endless group chats about travel planning!&rdquo;</p>
-              <p className="font-semibold">Emily K.</p>
-            </div>
           </div>
         </div>
       </div>
