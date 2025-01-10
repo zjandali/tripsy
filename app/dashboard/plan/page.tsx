@@ -23,8 +23,15 @@ interface Destination {
   description: string;
 }
 
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  image: string;
+}
+
 function App() {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [selectedFriends, setSelectedFriends] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -36,12 +43,29 @@ function App() {
     status: 'draft'
   });
   const [budget, setBudget] = useState<string>('');
+  const [friends, setFriends] = useState<User[]>([]);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/');
     }
   }, [status, router]);
+
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetchFriends();
+    }
+  }, [session]);
+
+  const fetchFriends = async () => {
+    try {
+      const response = await fetch('/api/friends');
+      const data = await response.json();
+      setFriends(data);
+    } catch (error) {
+      console.error('Error fetching friends:', error);
+    }
+  };
 
   const handleTripNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTripDetails(prev => ({
@@ -116,23 +140,6 @@ function App() {
     }
   };
 
-  const friends = [
-    {
-      id: 1,
-      name: 'Sarah Wilson',
-      image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80',
-    },
-    {
-      id: 2,
-      name: 'Michael Chen',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80',
-    },
-    {
-      id: 3,
-      name: 'Emma Thompson',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80',
-    }
-  ];
 
   const destinations = [
     {
@@ -162,6 +169,10 @@ function App() {
         : [...prev, name]
     );
   };
+
+  const filteredFriends = friends.filter(friend =>
+    friend.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-600 to-blue-800">
@@ -304,24 +315,37 @@ function App() {
 
                   {/* Friends List */}
                   <div className="space-y-2">
-                    {friends.map(friend => (
-                      <div
-                        key={friend.id}
-                        onClick={() => toggleFriend(friend.name)}
-                        className={`flex items-center p-2 rounded-lg cursor-pointer transition-colors ${
-                          selectedFriends.includes(friend.name)
-                            ? 'bg-white/20'
-                            : 'hover:bg-white/10'
-                        }`}
-                      >
-                        <img
-                          src={friend.image}
-                          alt={friend.name}
-                          className="w-10 h-10 rounded-full"
-                        />
-                        <span className="ml-3 text-white">{friend.name}</span>
+                    {friends
+                      .filter(friend =>
+                        friend.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        friend.email.toLowerCase().includes(searchQuery.toLowerCase())
+                      )
+                      .map(friend => (
+                        <div
+                          key={friend.id}
+                          onClick={() => toggleFriend(friend.name)}
+                          className={`flex items-center p-2 rounded-lg cursor-pointer transition-colors ${
+                            selectedFriends.includes(friend.name)
+                              ? 'bg-white/20'
+                              : 'hover:bg-white/10'
+                          }`}
+                        >
+                          <img
+                            src={friend.image}
+                            alt={friend.name}
+                            className="w-10 h-10 rounded-full"
+                          />
+                          <div className="ml-3">
+                            <span className="text-white">{friend.name}</span>
+                            <p className="text-white/50 text-sm">{friend.email}</p>
+                          </div>
+                        </div>
+                      ))}
+                    {filteredFriends.length === 0 && searchQuery && (
+                      <div className="text-white/70 text-center py-4">
+                        No friends found matching "{searchQuery}"
                       </div>
-                    ))}
+                    )}
                   </div>
                 </div>
               </div>
