@@ -50,6 +50,8 @@ model User {
   friendsOf            User[]    @relation("UserFriends")
   sentMessages     Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("ReceivedMessages")
+  createdTrips Trip[] @relation("CreatedTrips")
+  trips        Trip[] @relation("TripParticipants")
 }
 
 model VerificationToken {
@@ -82,4 +84,22 @@ model Message {
   createdAt  DateTime @default(now())
 
   @@index([senderId, receiverId])
+}
+
+model Trip {
+  id          String   @id @default(cuid())
+  name        String
+  startDate   DateTime
+  endDate     DateTime
+  budget      Float?
+  status      String   @default("draft")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  creatorId   String
+  creator     User     @relation("CreatedTrips", fields: [creatorId], references: [id])
+  participants User[]  @relation("TripParticipants")
+  destination String?
+  destinationDetails Json?
+
+  @@index([creatorId])
 }

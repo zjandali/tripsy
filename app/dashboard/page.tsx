@@ -85,7 +85,7 @@ export default function Dashboard() {
           </div>
 
           <div 
-            onClick={() => router.push('/dashboard/trips/plan')}
+            onClick={() => router.push('/dashboard/plan')}
             className="group bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-white/20 hover:bg-white/20 transition-all cursor-pointer"
           >
             <div className="bg-white/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-white/30 transition-colors">
