@@ -343,7 +343,7 @@ function App() {
                       ))}
                     {filteredFriends.length === 0 && searchQuery && (
                       <div className="text-white/70 text-center py-4">
-                        No friends found matching "{searchQuery}"
+                        No friends found matching &quot;{searchQuery}&quot;
                       </div>
                     )}
                   </div>
