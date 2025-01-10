@@ -24,7 +24,7 @@ interface Destination {
 }
 
 function App() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   const [selectedFriends, setSelectedFriends] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -35,7 +35,6 @@ function App() {
     participants: [],
     status: 'draft'
   });
-  const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [budget, setBudget] = useState<string>('');
 
   useEffect(() => {
@@ -55,14 +54,6 @@ function App() {
     setTripDetails(prev => ({
       ...prev,
       [type === 'start' ? 'startDate' : 'endDate']: value
-    }));
-  };
-
-  const handleDestinationSelect = (destination: Destination) => {
-    setSelectedDestination(destination);
-    setTripDetails(prev => ({
-      ...prev,
-      selectedDestination: destination
     }));
   };
 
