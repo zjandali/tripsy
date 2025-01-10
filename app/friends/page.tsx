@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Users, Search, UserPlus, UserMinus, MessageSquare, MapPin } from 'lucide-react';
+import { Users, Search, UserMinus, MessageSquare, MapPin } from 'lucide-react';
 
 interface User {
   id: string;
