@@ -4,6 +4,7 @@ import { Calendar,  Plane, Hotel, Camera, Utensils, CreditCard, Search, X } from
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import FlightSearch from '../../components/FlightSearch';
 
 interface TripDetails {
   id?: string;
@@ -273,6 +274,20 @@ function App() {
                     <span className="text-white">Restaurants</span>
                   </button>
                 </div>
+              </div>
+
+              {/* Flights Section */}
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 p-6">
+                <h2 className="text-xl font-semibold text-white mb-4">Flights</h2>
+                {tripDetails.startDate && tripDetails.selectedDestination ? (
+                  <FlightSearch
+                    origin="LAX" // You might want to make this dynamic based on user's location
+                    destination={tripDetails.selectedDestination.name}
+                    date={tripDetails.startDate}
+                  />
+                ) : (
+                  <p className="text-white/70">Please select travel dates and destination first</p>
+                )}
               </div>
             </div>
 
