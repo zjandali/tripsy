@@ -1,8 +1,12 @@
-import FirecrawlApp from "@mendable/firecrawl-js";
-import { z } from "zod";
+import Amadeus from 'amadeus';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+
+const amadeus = new Amadeus({
+  clientId: process.env.AMADEUS_CLIENT_ID!,
+  clientSecret: process.env.AMADEUS_CLIENT_SECRET!
+});
 
 export async function GET(request: Request) {
   const session = await getServerSession(authOptions);
@@ -21,40 +25,14 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Make request to Firecrawl API
-    const app = new FirecrawlApp({
-      apiKey: process.env.FIRECRAWL_API_KEY
-    });
-    
-    // Define schema to extract flight data
-    const schema = z.object({
-      flights: z.array(z.object({
-        airline: z.string(),
-        departureTime: z.string(),
-        arrivalTime: z.string(),
-        price: z.object({
-          amount: z.number(),
-          currency: z.string()
-        }),
-        stops: z.number(),
-        bookingUrl: z.string()
-      })),
-      searchSummary: z.object({
-        totalResults: z.number(),
-        cheapestPrice: z.number()
-      })
-    });
-    
-    const response = await app.extract([
-      'https://www.kayak.com/flights/*', 
-      'https://www.google.com/travel/flights/*', 
-      'https://www.expedia.com/Flights-Search/*'
-    ], {
-      prompt: `Find flights from ${origin} to ${destination} for ${date}. Include direct booking URLs for each flight.`,
-      schema: schema
+    const response = await amadeus.shopping.flightOffersSearch.get({
+      originLocationCode: origin,
+      destinationLocationCode: destination,
+      departureDate: date,
+      adults: '1'
     });
 
-    return NextResponse.json(response);
+    return NextResponse.json(response.data);
   } catch (error) {
     console.error('Error fetching flight data:', error);
     return new NextResponse('Error fetching flight data', { status: 500 });
