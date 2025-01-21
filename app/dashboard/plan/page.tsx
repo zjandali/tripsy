@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { FlightSearch } from '../../components/FlightSearch';
+import { AirportSelect } from '../../components/AirportSelect';
 
 interface TripDetails {
   id?: string;
@@ -15,6 +16,8 @@ interface TripDetails {
   participants: string[];
   budget?: number;
   status: 'draft' | 'active' | 'completed';
+  originAirport?: string;
+  destinationAirport?: string;
 }
 
 interface Destination {
@@ -45,6 +48,8 @@ function App() {
   });
   const [budget, setBudget] = useState<string>('');
   const [friends, setFriends] = useState<User[]>([]);
+  const [originAirport, setOriginAirport] = useState('LAX');
+  const [destinationAirport, setDestinationAirport] = useState('');
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -279,15 +284,30 @@ function App() {
               {/* Flights Section */}
               <div className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 p-6">
                 <h2 className="text-xl font-semibold text-white mb-4">Flights</h2>
-                {tripDetails.startDate && tripDetails.selectedDestination ? (
-                  <FlightSearch
-                    origin="LAX" // You might want to make this dynamic based on user's location
-                    destination={tripDetails.selectedDestination.name}
-                    date={tripDetails.startDate}
-                  />
-                ) : (
-                  <p className="text-white/70">Please select travel dates and destination first</p>
-                )}
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <AirportSelect
+                      value={originAirport}
+                      onChange={setOriginAirport}
+                      placeholder="Departure Airport"
+                    />
+                    <AirportSelect
+                      value={destinationAirport}
+                      onChange={setDestinationAirport}
+                      placeholder="Arrival Airport"
+                    />
+                  </div>
+                  
+                  {tripDetails.startDate && originAirport && destinationAirport ? (
+                    <FlightSearch
+                      origin={originAirport}
+                      destination={destinationAirport}
+                      date={tripDetails.startDate}
+                    />
+                  ) : (
+                    <p className="text-white/70">Please select travel dates and airports</p>
+                  )}
+                </div>
               </div>
             </div>
 
