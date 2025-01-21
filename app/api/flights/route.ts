@@ -48,7 +48,7 @@ export async function GET(request: Request) {
     const response = await app.extract([
       'https://www.kayak.com/flights/*', 
       'https://www.google.com/travel/flights/*', 
-      'https://www.expedia.com/Flights-Search*'
+      'https://www.expedia.com/Flights-Search/*'
     ], {
       prompt: `Find flights from ${origin} to ${destination} for ${date}. Include direct booking URLs for each flight.`,
       schema: schema
