@@ -4,7 +4,7 @@ import { Calendar,  Plane, Hotel, Camera, Utensils, CreditCard, Search, X } from
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import FlightSearch from '../../components/FlightSearch';
+import { FlightSearch } from '../../components/FlightSearch';
 
 interface TripDetails {
   id?: string;
