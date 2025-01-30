@@ -16,18 +16,18 @@ interface AirportSelectProps {
   placeholder: string;
 }
 
-export function AirportSelect({ value, onChange, placeholder }: AirportSelectProps) {
+const commonAirports: Airport[] = [
+  { iataCode: 'LAX', name: 'Los Angeles International Airport', city: 'Los Angeles', country: 'USA' },
+  { iataCode: 'JFK', name: 'John F. Kennedy International Airport', city: 'New York', country: 'USA' },
+  { iataCode: 'SFO', name: 'San Francisco International Airport', city: 'San Francisco', country: 'USA' },
+  { iataCode: 'ORD', name: 'O\'Hare International Airport', city: 'Chicago', country: 'USA' },
+  { iataCode: 'LHR', name: 'London Heathrow Airport', city: 'London', country: 'UK' },
+];
+
+export function AirportSelect({ onChange, placeholder }: AirportSelectProps) {
   const [query, setQuery] = useState('');
   const [airports, setAirports] = useState<Airport[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-
-  const commonAirports: Airport[] = [
-    { iataCode: 'LAX', name: 'Los Angeles International Airport', city: 'Los Angeles', country: 'USA' },
-    { iataCode: 'JFK', name: 'John F. Kennedy International Airport', city: 'New York', country: 'USA' },
-    { iataCode: 'SFO', name: 'San Francisco International Airport', city: 'San Francisco', country: 'USA' },
-    { iataCode: 'ORD', name: 'O\'Hare International Airport', city: 'Chicago', country: 'USA' },
-    { iataCode: 'LHR', name: 'London Heathrow Airport', city: 'London', country: 'UK' },
-  ];
 
   useEffect(() => {
     setAirports(commonAirports.filter(airport => 
