@@ -28,12 +28,21 @@ export async function POST(request: Request) {
       where: { id: requestId },
       data: { status: 'ACCEPTED' },
     }),
-    // Create bidirectional friendship
+    // Connect current user to sender
     prisma.user.update({
       where: { id: session.user.id },
       data: {
         friends: {
           connect: { id: friendRequest.senderId },
+        },
+      },
+    }),
+    // Connect sender to current user
+    prisma.user.update({
+      where: { id: friendRequest.senderId },
+      data: {
+        friends: {
+          connect: { id: session.user.id },
         },
       },
     }),
